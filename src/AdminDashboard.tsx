@@ -1,7 +1,9 @@
 import { useState, useEffect, Suspense, lazy } from "react";
-import DataItem from "@/components/pages/DataItem";
+// import DataItem from "@/components/pages/DataItem";
 import ChartFallback from "./components/pages/ChartFallback";
 import type { User } from "@/types/user";
+import UsersTable from "@/components/pages/UsersTable";
+import FilterInput from "./components/pages/FilterInput";
 
 const ChartComponent = lazy(() => import("@/components/pages/SuperHeavyChart"));
 
@@ -37,33 +39,27 @@ export default function AdminDashboard() {
             .then((data) => setUsers(data));
     }, [search]);
 
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+    };
+
     return (
         <div>
-            <div>
-                {/* Bug 5: Input ini harusnya otomatis fokus saat halaman dimuat */}
-                <input
-                    type="text"
-                    placeholder="Cari nama user..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
+            <div className="grid xl:grid-cols-2 lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 gap-5">
+                <div className="space-y-5 border border-slate-200 rounded-lg p-5 shadow-lg w-full overflow-hidden">
+                    <FilterInput onSearchChange={handleSearchChange} />
 
-                <p>Total User (Statistik): {stats.total || 0}</p>
-
-                <div>
-                    {filteredUsers.map((user) => (
-                        <DataItem
-                            key={user.id}
-                            user={user}
-                            onDelete={handleDelete}
-                        />
-                    ))}
+                    <UsersTable
+                        users={filteredUsers}
+                        handleDelete={handleDelete}
+                    />
                 </div>
 
-                {/* Bug 3: Komponen ini menahan loading awal halaman */}
-                <Suspense fallback={<ChartFallback />}>
-                    <ChartComponent data={stats} />
-                </Suspense>
+                <div className="space-y-5 border border-slate-200 rounded-lg p-5 shadow-lg">
+                    <Suspense fallback={<ChartFallback />}>
+                        <ChartComponent data={stats} />
+                    </Suspense>
+                </div>
             </div>
         </div>
     );

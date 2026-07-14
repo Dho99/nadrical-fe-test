@@ -10,10 +10,7 @@ function AppSidebar() {
         <Sidebar>
             <SidebarHeader>
                 <div className="px-4 py-3">
-                    <div className="text-sm font-semibold">Acme</div>
-                    <div className="text-xs text-muted-foreground">
-                        Kelola aplikasi
-                    </div>
+                    <div className="text-xl font-bold">Acme</div>
                 </div>
             </SidebarHeader>
             <SidebarContent>

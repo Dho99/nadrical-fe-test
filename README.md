@@ -1,77 +1,77 @@
-# React + TypeScript + Vite
+# nadrical-fe-test
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[Deskripsi singkat project]
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Daftar Isi
 
-## React Compiler
+- [Analisa Bug](#analisa-bug)
+- [Instruksi Build](#instruksi-build)
+- [Log Kontribusi](#log-kontribusi)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+## Analisa Bug
 
-## Expanding the ESLint configuration
+### Bug 1: Sidebar tidak terbuka/tertutup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Lokasi:** `AdminDashboard.jsx:7`
+- **Penyebab:** Variabel `isSidebarOpen` menggunakan `let` biasa yang tidak memicu re-render React saat nilainya berubah.
+- **Solusi:** Gunakan `useState` untuk menyimpan state `isSidebarOpen`. Manipulasi state dengan `setIsSidebarOpen(prev => !prev)` saat tombol ditekan agar React mendeteksi perubahan dan me-render ulang komponen.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Bug 2: Infinite loop fetch
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Lokasi:** `AdminDashboard.jsx:14-16`
+- **Penyebab:** `fetch()` dipanggil langsung di body komponen tanpa pembungkus. Setiap kali `setUsers()` dipanggil, komponen re-render dan memicu `fetch()` lagi, menyebabkan infinite loop.
+- **Solusi:** Bungkus `fetch()` di dalam `useEffect` dengan array dependensi `[search]` agar fetching hanya berjalan saat nilai `search` berubah (atau array kosong `[]` jika hanya sekali di mount).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Bug 3: SuperHeavyChart membebani loading awal
 
+- **Lokasi:** `AdminDashboard.jsx:77` & `SuperHeavyChart.jsx`
+- **Penyebab:** Komponen `SuperHeavyChart` di-import secara eager (langsung), sehingga kode library chart berukuran besar ikut diunduh saat loading awal meskipun belum tentu langsung tampil.
+- **Solusi:** Gunakan `React.lazy()` untuk dynamic import + `<Suspense>` sebagai pembungkus dengan `fallback` (misal spinner/skeleton) agar komponen hanya diunduh saat akan di-render.
+
+### Bug 4: Kinerja lambat saat pencarian
+
+- **Lokasi:** `AdminDashboard.jsx:19-26`
+- **Penyebab:** ...
+- **Solusi:** ...
+
+### Bug 5: Input tidak auto-focus
+
+- **Lokasi:** `AdminDashboard.jsx:57-62`
+- **Penyebab:** ...
+- **Solusi:** ...
+
+### Bug 6: DataItem re-render tidak perlu
+
+- **Lokasi:** `AdminDashboard.jsx:29-32` & `DataItem.jsx:4`
+- **Penyebab:** ...
+- **Solusi:** ...
+
+---
+
+## Instruksi Build
+
+```bash
+npm install
+npm run dev
+npm run build
+npm run preview
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Log Kontribusi
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Anggota | Kontribusi                                                      |
+| ------- | --------------------------------------------------------------- |
+| Ridho   | - Setup Vite & UI Frameworks, init github repo, fix bug 1, 2, 3 |
 
-```
+- Refactor Codebase dari JSX ke TSX
+- Reinstall UI Frameworks dengan Componentsnya
+- Layouting Dashboard
+  | - Refactor React JSX ke TSX
+  | Person B | ... |

@@ -1,21 +1,22 @@
-# React + Vite
+## Analisa Bug
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Bug 1: Sidebar tidak terbuka/tertutup
 
-Currently, two official plugins are available:
+- **Lokasi:** `AdminDashboard.jsx:7`
+- **Penyebab:** Variabel `isSidebarOpen` menggunakan `let` biasa yang tidak memicu re-render React saat nilainya berubah.
+- **Solusi:** Gunakan `useState` untuk menyimpan state `isSidebarOpen`. Manipulasi state dengan `setIsSidebarOpen(prev => !prev)` saat tombol ditekan agar React mendeteksi perubahan dan me-render ulang komponen.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Bug 2: Infinite loop fetch
 
-## React Compiler
+- **Lokasi:** `AdminDashboard.jsx:14-16`
+- **Penyebab:** `fetch()` dipanggil langsung di body komponen tanpa pembungkus. Setiap kali `setUsers()` dipanggil, komponen re-render dan memicu `fetch()` lagi, menyebabkan infinite loop.
+- **Solusi:** Bungkus `fetch()` di dalam `useEffect` dengan array dependensi `[search]` agar fetching hanya berjalan saat nilai `search` berubah (atau array kosong `[]` jika hanya sekali di mount).
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Bug 3: SuperHeavyChart membebani loading awal
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Lokasi:** `AdminDashboard.jsx:77` & `SuperHeavyChart.jsx`
+- **Penyebab:** Komponen `SuperHeavyChart` di-import secara eager (langsung), sehingga kode library chart berukuran besar ikut diunduh saat loading awal meskipun belum tentu langsung tampil.
+- **Solusi:** Gunakan `React.lazy()` untuk dynamic import + `<Suspense>` sebagai pembungkus dengan `fallback` (misal spinner/skeleton) agar komponen hanya diunduh saat akan di-render.
 
 # Bug 4 — Fungsi `calculateStatistics()` selalu berjalan saat user mengetik
 
@@ -55,7 +56,7 @@ Menggunakan `useMemo()` untuk melakukan _memoization_ terhadap hasil perhitungan
 
 ```jsx
 const stats = useMemo(() => {
-  return calculateStatistics(users);
+    return calculateStatistics(users);
 }, [users]);
 ```
 
@@ -106,7 +107,7 @@ Menggunakan kombinasi `useRef()` dan `useEffect()`.
 const inputRef = useRef(null);
 
 useEffect(() => {
-  inputRef.current?.focus();
+    inputRef.current?.focus();
 }, []);
 ```
 
@@ -156,7 +157,7 @@ Fungsi `handleDelete` dideklarasikan di dalam body komponen.
 
 ```jsx
 const handleDelete = (id) => {
-  console.log("Menghapus user:", id);
+    console.log("Menghapus user:", id);
 };
 ```
 
@@ -178,7 +179,7 @@ Menggunakan `useCallback()`.
 
 ```jsx
 const handleDelete = useCallback((id) => {
-  console.log("Menghapus user:", id);
+    console.log("Menghapus user:", id);
 }, []);
 ```
 
@@ -202,3 +203,22 @@ useCallback adalah React Hook bawaan yang berfungsi untuk menyimpan (memoisasi) 
 https://react.dev/reference/react/useCallback
 
 ---
+
+## Instruksi Build
+
+```bash
+npm install
+npm run dev
+npm run build
+npm run preview
+npm run lint
+```
+
+---
+
+## Log Kontribusi
+
+| Anggota  | Kontribusi                                                         |
+| -------- | ------------------------------------------------------------------ |
+| Ridho    | Setup Vite & UI Frameworks, init github repo, analisis bug 1, 2, 3 |
+| Person B | Analisis bug 4,5,6                                                 |

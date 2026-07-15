@@ -5,7 +5,7 @@ import AdminNavbar from "./components/pages/AdminNavbar";
 
 export default function App() {
     return (
-        <SidebarProvider defaultOpen={false}>
+        <SidebarProvider defaultOpen={true}>
             <AdminSidebar />
             <div className="w-full">
                 <AdminNavbar />

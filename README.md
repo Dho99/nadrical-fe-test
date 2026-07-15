@@ -1,17 +1,3 @@
-# nadrical-fe-test
-
-[Deskripsi singkat project]
-
----
-
-## Daftar Isi
-
-- [Analisa Bug](#analisa-bug)
-- [Instruksi Build](#instruksi-build)
-- [Log Kontribusi](#log-kontribusi)
-
----
-
 ## Analisa Bug
 
 ### Bug 1: Sidebar tidak terbuka/tertutup
@@ -32,23 +18,189 @@
 - **Penyebab:** Komponen `SuperHeavyChart` di-import secara eager (langsung), sehingga kode library chart berukuran besar ikut diunduh saat loading awal meskipun belum tentu langsung tampil.
 - **Solusi:** Gunakan `React.lazy()` untuk dynamic import + `<Suspense>` sebagai pembungkus dengan `fallback` (misal spinner/skeleton) agar komponen hanya diunduh saat akan di-render.
 
-### Bug 4: Kinerja lambat saat pencarian
+# Bug 4 — Fungsi `calculateStatistics()` selalu berjalan saat user mengetik
 
-- **Lokasi:** `AdminDashboard.jsx:19-26`
-- **Penyebab:** ...
-- **Solusi:** ...
+## Permasalahan
 
-### Bug 5: Input tidak auto-focus
+Fungsi `calculateStatistics()` melakukan proses komputasi yang cukup berat.
 
-- **Lokasi:** `AdminDashboard.jsx:57-62`
-- **Penyebab:** ...
-- **Solusi:** ...
+```jsx
+const stats = calculateStatistics(users);
+```
 
-### Bug 6: DataItem re-render tidak perlu
+Hal ini disebabkan karena fungsi tersebut dipanggil langsung di dalam body komponen, React akan menjalankannya setiap kali komponen dirender ulang. Saat user mengetik pada kolom pencarian,
 
-- **Lokasi:** `AdminDashboard.jsx:29-32` & `DataItem.jsx:4`
-- **Penyebab:** ...
-- **Solusi:** ...
+```jsx
+setSearch(e.target.value);
+```
+
+state search akan berubah sehingga react melakukan render ulang. Akibatnya, meskipun data users tidak berubah sama, fungsi `calculateStatistics()` akan tetap dijalankan kembali.
+
+Hal ini menyebabkan:
+
+- Proses mengetik menjadi terasa lambat (_lag_).
+- Penggunaan CPU meningkat.
+- Pengguna menjadi kurang nyaman.
+
+---
+
+## Penyebab
+
+Pada react, setiap perubahan state akan menyebabkan seluruh fungsi komponen dieksekusi kembali. Hal ini dikarenakan `calculateStatistics(users)` berada di dalam proses render, sehingga react akan selalu menghitung ulang meskipun data `users` sebenarnya tidak mengalami perubahan.
+
+---
+
+## Solusi
+
+Menggunakan `useMemo()` untuk melakukan _memoization_ terhadap hasil perhitungan.
+
+```jsx
+const stats = useMemo(() => {
+    return calculateStatistics(users);
+}, [users]);
+```
+
+---
+
+## Alasan Menggunakan `useMemo`
+
+seMemo adalah React Hook yang berfungsi untuk meningkatkan performa aplikasi dengan cara menyimpan (memo) hasil perhitungan yang berat di memori
+
+`useMemo` akan menyimpan (_cache_) hasil dari proses komputasi.
+
+Selama data users tidak berubah, React akan menggunakan hasil yang sudah disimpan tanpa menjalankan ulang fungsi `calculateStatistics()`. Dengan demikian, ketika user mengetik pada kolom pencarian, proses komputasi berat tidak akan dijalankan.
+
+### Manfaat
+
+- Mengurangi proses komputasi yang tidak diperlukan.
+- Meningkatkan performa aplikasi.
+- Membuat proses pencarian lebih responsif.
+- Mengurangi beban CPU.
+
+---
+
+## Referensi React
+
+https://react.dev/reference/react/useMemo
+
+---
+
+# Bug 5 — Kolom pencarian tidak otomatis fokus saat halaman terbuka
+
+## Permasalahan
+
+Saat halaman pertama kali dibuka, kursor seharusnya langsung berada pada kolom pencarian sehingga pengguna bisa langsung mengetik. Namun pada implementasi saat ini, pengguna masih harus mengklik kolom input secara manual. Hal tersebut mengurangi kenyamanan pengguna.
+
+---
+
+## Penyebab
+
+React tidak secara otomatis memberikan fokus pada elemen HTML setelah proses render selesai karena tidak terdapat referensi ke elemen input, aplikasi tidak memiliki akses untuk memanggil method `focus()`.
+
+---
+
+## Solusi
+
+Menggunakan kombinasi `useRef()` dan `useEffect()`.
+
+```jsx
+const inputRef = useRef(null);
+
+useEffect(() => {
+    inputRef.current?.focus();
+}, []);
+```
+
+Kemudian memasangkan `ref` pada komponen input.
+
+```jsx
+<input
+    ref={inputRef}
+    ...
+/>
+```
+
+---
+
+## Alasan Menggunakan `useRef`
+
+useRef adalah React Hook yang berfungsi untuk menyimpan nilai yang dapat diubah tanpa memicu re-render pada komponen. useEffect adalah fitur bawaan (hook) pada React yang memungkinkan Anda untuk menjalankan kode saat komponen pertama kali dimuat (mount), diperbarui (update), atau dihapus dari layar (unmount).
+
+`useRef` digunakan untuk mendapatkan referensi langsung elemen DOM tanpa menyebabkan proses render ulang. Sedangkan `useEffect` digunakan agar fungsi `focus()` dijalankan setelah komponen selesai dirender (_mounted_).
+
+### Manfaat
+
+- Cursor langsung aktif pada kolom pencarian.
+- Meningkatkan pengalaman pengguna.
+
+---
+
+## Referensi React
+
+https://react.dev/reference/react/useRef
+
+https://react.dev/reference/react/useEffect
+
+---
+
+# Bug 6 — `React.memo` tidak berfungsi karena `handleDelete()` selalu dibuat ulang
+
+## Permasalahan
+
+Komponen DataItem sudah dibungkus menggunakan `React.memo`. Namun ketika user mengetik pada kolom pencarian, seluruh komponen DataItem tetap dirender ulang.
+
+---
+
+## Penyebab
+
+Fungsi `handleDelete` dideklarasikan di dalam body komponen.
+
+```jsx
+const handleDelete = (id) => {
+    console.log("Menghapus user:", id);
+};
+```
+
+Pada setiap proses render, react akan membuat objek fungsi yang baru. Meskipun isi fungsi sama, react membandingkan referensi fungsi, bukan isi dari fungsi tersebut.
+
+Akibatnya,
+
+```jsx
+oldHandleDelete !== newHandleDelete;
+```
+
+Disebabkan referensi berubah, `React.memo` menganggap props berubah sehingga seluruh komponen children ikut dirender ulang.
+
+---
+
+## Solusi
+
+Menggunakan `useCallback()`.
+
+```jsx
+const handleDelete = useCallback((id) => {
+    console.log("Menghapus user:", id);
+}, []);
+```
+
+---
+
+## Alasan Menggunakan `useCallback`
+
+useCallback adalah React Hook bawaan yang berfungsi untuk menyimpan (memoisasi) definisi fungsi di antara proses render ulang.
+
+`useCallback` akan menyimpan referensi fungsi sehingga react tetap menggunakan objek fungsi yang sama selama dependency tidak berubah. Oleh karena itu, `React.memo` dapat mendeteksi bahwa props tidak berubah dan tidak perlu melakukan render ulang terhadap komponen anak.
+
+### Manfaat
+
+- Mengurangi render yang tidak diperlukan.
+- Membuat `React.memo` bekerja secara optimal.
+
+---
+
+## Referensi React
+
+https://react.dev/reference/react/useCallback
 
 ---
 
@@ -66,12 +218,7 @@ npm run lint
 
 ## Log Kontribusi
 
-| Anggota | Kontribusi                                                      |
-| ------- | --------------------------------------------------------------- |
-| Ridho   | - Setup Vite & UI Frameworks, init github repo, fix bug 1, 2, 3 |
-
-- Refactor Codebase dari JSX ke TSX
-- Reinstall UI Frameworks dengan Componentsnya
-- Layouting Dashboard
-  | - Refactor React JSX ke TSX
-  | Person B | ... |
+| Anggota | Kontribusi                                                         |
+| ------- | ------------------------------------------------------------------ |
+| Ridho   | Setup Vite & UI Frameworks, init github repo, analisis bug 1, 2, 3 |
+| Sukma   | Analisis bug 4,5,6                                                 |

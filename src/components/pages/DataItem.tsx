@@ -1,7 +1,13 @@
 import React from "react";
+import type { User } from "@/types/user";
+
+interface IProps {
+    user: User;
+    onDelete: (id: User["id"]) => void;
+}
 
 // Komponen ini sudah dibungkus React.memo agar tidak re-render jika props tidak berubah
-const DataItem = React.memo(({ user, onDelete }) => {
+const DataItem = React.memo(({ user, onDelete }: IProps) => {
     // Console log ini akan terus muncul saat user ngetik pencarian di parent. Ini BUG (Bug 6)!
     console.log(`Render DataItem: ${user.name}`);
 

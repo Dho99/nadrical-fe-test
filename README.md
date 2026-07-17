@@ -218,7 +218,7 @@ npm run lint
 
 ## Log Kontribusi
 
-| Anggota  | Kontribusi                                                         |
-| -------- | ------------------------------------------------------------------ |
-| Ridho    | Setup Vite & UI Frameworks, init github repo, analisis bug 1, 2, 3 |
-| Person B | Analisis bug 4,5,6                                                 |
+| Anggota | Kontribusi                                                         |
+| ------- | ------------------------------------------------------------------ |
+| Ridho   | Setup Vite & UI Frameworks, init github repo, analisis bug 1, 2, 3 |
+| Sukma   | Analisis bug 4,5,6                                                 |

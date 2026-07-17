@@ -218,7 +218,9 @@ npm run dev
 
 ## Log Kontribusi
 
-| Anggota | Kontribusi                                                         |
-| ------- | ------------------------------------------------------------------ |
-| Ridho   | Setup Vite & UI Frameworks, init github repo, analisis bug 1, 2, 3 |
-| Sukma   | Analisis bug 4,5,6                                                 |
+## Log Kontribusi
+
+| Anggota | Kontribusi                                                                                                   |
+| ------- | ------------------------------------------------------------------------------------------------------------ |
+| Ridho   | Setup Vite & UI Frameworks, inisialisasi GitHub repo, analisis bug [1,2,3], membuat login page, menambahkan sidebar, navbar, sidebar trigger, dan profile dropdown |
+| Sukma   | Analisis bug [4,5,6], update table & input, membuat fitur export ke Excel, serta membuat bar chart            |

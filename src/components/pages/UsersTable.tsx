@@ -1,98 +1,122 @@
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { User } from "@/types/user";
-import { Button } from "../ui/button";
+
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 interface IProps {
-    users: User[];
-    handleDelete?: (id: User["id"]) => void;
+  users: User[];
+  handleDelete?: (id: User["id"]) => void;
 }
 
 function UsersTable({ users, handleDelete }: IProps) {
-    return (
-        <Table>
-            <TableCaption>A list of users.</TableCaption>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Id</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Username</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Address</TableHead>
-                    <TableHead>Action</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {users.map((user, index) => (
-                    <TableRow key={index}>
-                        <TableCell className="font-medium">{user.id}</TableCell>
-                        <TableCell>{user.name}</TableCell>
-                        <TableCell>{user.username}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>{user.address?.city}</TableCell>
-                        <TableCell>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button variant={"destructive"} size={"sm"}>
-                                        Hapus
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                            Are you absolutely sure?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This
-                                            will permanently delete your account
-                                            from our servers.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                            Cancel
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() =>
-                                                handleDelete?.(user.id)
-                                            }
-                                        >
-                                            Continue
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-            <TableFooter>
-                <TableRow>
-                    <TableCell colSpan={5}>Total Listed Users</TableCell>
-                    <TableCell className="text-end">{users?.length}</TableCell>
-                </TableRow>
-            </TableFooter>
-        </Table>
-    );
+  return (
+    <div className="rounded-2xl border border-[#27272A] bg-[#18181B] p-6 shadow-xl">
+      <Table>
+        <TableCaption className="text-[#71717A]">
+          Manage all registered users in the system.
+        </TableCaption>
+
+        <TableHeader>
+          <TableRow className="border-[#27272A] hover:bg-transparent">
+            <TableHead className="text-[#A1A1AA]">ID</TableHead>
+            <TableHead className="text-[#A1A1AA]">Name</TableHead>
+            <TableHead className="text-[#A1A1AA]">Username</TableHead>
+            <TableHead className="text-[#A1A1AA]">Email</TableHead>
+            <TableHead className="text-[#A1A1AA]">City</TableHead>
+            <TableHead className="text-right text-[#A1A1AA]">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {users.map((user) => (
+            <TableRow
+              key={user.id}
+              className="border-[#27272A] transition-all duration-200 hover:bg-[#202024]">
+              <TableCell>
+                <Badge className="border border-[#22D3EE]/30 bg-[#22D3EE]/10 text-[#22D3EE]">
+                  {" "}
+                  #{user.id}
+                </Badge>
+              </TableCell>
+
+              <TableCell className="font-semibold text-[#FAFAFA]">
+                {user.name}
+              </TableCell>
+
+              <TableCell className="text-[#A1A1AA]">@{user.username}</TableCell>
+
+              <TableCell className="text-[#A1A1AA]">{user.email}</TableCell>
+
+              <TableCell>
+                <Badge
+                  variant="outline"
+                  className="border-[#3F3F46] bg-[#09090B] text-[#A1A1AA]">
+                  {user.address?.city}
+                </Badge>
+              </TableCell>
+
+              <TableCell className="text-right">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      className="bg-[#F43F5E] text-white transition-all hover:bg-[#F43F5E]/90 hover:shadow-[0_0_20px_rgba(244,63,94,.18)]">
+                      Delete
+                    </Button>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent className="max-w-xl rounded-2xl border border-[#27272A] bg-[#18181B] p-8 text-[#FAFAFA] shadow-[0_0_35px_rgba(168,85,247,.12)]">
+                    <AlertDialogHeader className="space-y-3">
+                      <AlertDialogTitle className="text-2xl font-bold text-[#FAFAFA]">
+                        Delete User
+                      </AlertDialogTitle>
+
+                      <AlertDialogDescription className="text-base leading-relaxed text-[#A1A1AA]">
+                        This action cannot be undone. The selected user will be
+                        permanently removed from the system.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter className="mt-8 gap-3">
+                      <AlertDialogCancel className="!border-[#3F3F46] !bg-[#09090B] !text-[#FAFAFA] hover:!bg-[#202024] hover:!text-[#FAFAFA]">
+                        Cancel
+                      </AlertDialogCancel>
+
+                      <AlertDialogAction
+                        onClick={() => handleDelete?.(user.id)}
+                        className="!bg-[#F43F5E] !text-white hover:!bg-[#FB7185]">
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 }
 
 export default UsersTable;

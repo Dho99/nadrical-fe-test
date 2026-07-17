@@ -53,7 +53,8 @@ function UsersTable({ users, handleDelete }: IProps) {
               key={user.id}
               className="border-[#27272A] transition-all duration-200 hover:bg-[#202024]">
               <TableCell>
-                <Badge className="border border-cyan-500/30 bg-cyan-500/10 text-cyan-300">
+                <Badge className="border border-[#22D3EE]/30 bg-[#22D3EE]/10 text-[#22D3EE]">
+                  {" "}
                   #{user.id}
                 </Badge>
               </TableCell>
@@ -64,7 +65,7 @@ function UsersTable({ users, handleDelete }: IProps) {
 
               <TableCell className="text-[#A1A1AA]">@{user.username}</TableCell>
 
-              <TableCell className="text-[#D4D4D8]">{user.email}</TableCell>
+              <TableCell className="text-[#A1A1AA]">{user.email}</TableCell>
 
               <TableCell>
                 <Badge
@@ -79,7 +80,7 @@ function UsersTable({ users, handleDelete }: IProps) {
                   <AlertDialogTrigger asChild>
                     <Button
                       size="sm"
-                      className="bg-[#F43F5E] text-white transition-all hover:bg-[#FB7185] hover:shadow-[0_0_18px_rgba(244,63,94,.35)]">
+                      className="bg-[#F43F5E] text-white transition-all hover:bg-[#F43F5E]/90 hover:shadow-[0_0_20px_rgba(244,63,94,.18)]">
                       Delete
                     </Button>
                   </AlertDialogTrigger>

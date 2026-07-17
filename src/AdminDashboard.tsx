@@ -14,6 +14,9 @@ import UsersTable from "@/components/pages/UsersTable";
 import FilterInput from "@/components/pages/FilterInput";
 import { Card } from "@/components/ui/card";
 import TableSkeleton from "./components/pages/TableSkeleton";
+import { Button } from "./components/ui/button";
+import { Download } from "lucide-react";
+import { exportUsersToExcel } from "../utils/exportUsersToExcel";
 
 const ChartComponent = lazy(() => import("@/components/pages/SuperHeavyChart"));
 
@@ -86,12 +89,21 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="w-full lg:w-80">
-            <div className="rounded-xl border border-[#27272A] bg-[#09090B] p-1">
-              <FilterInput
-                ref={searchInputRef}
-                onSearchChange={handleSearchChange}
-              />
+          <div className="flex w-full items-center gap-3 lg:w-auto">
+            <Button
+              onClick={() => exportUsersToExcel(filteredUsers)}
+              className="bg-[#22C55E] text-white transition-all duration-300 hover:bg-[#4ADE80]">
+              <Download className="mr-2 h-4 w-4" />
+              Export Excel
+            </Button>
+
+            <div className="w-full lg:w-80">
+              <div className="rounded-xl border border-[#27272A] bg-[#09090B] p-1">
+                <FilterInput
+                  ref={searchInputRef}
+                  onSearchChange={handleSearchChange}
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/types/user";
+import { memo } from "react";
 
 import {
   AlertDialog,
@@ -54,7 +55,6 @@ function UsersTable({ users, handleDelete }: IProps) {
               className="border-[#27272A] transition-all duration-200 hover:bg-[#202024]">
               <TableCell>
                 <Badge className="border border-[#22D3EE]/30 bg-[#22D3EE]/10 text-[#22D3EE]">
-                  {" "}
                   #{user.id}
                 </Badge>
               </TableCell>
@@ -85,7 +85,7 @@ function UsersTable({ users, handleDelete }: IProps) {
                     </Button>
                   </AlertDialogTrigger>
 
-                  <AlertDialogContent className="max-w-xl rounded-2xl border border-[#27272A] bg-[#18181B] p-8 text-[#FAFAFA] shadow-[0_0_35px_rgba(168,85,247,.12)]">
+                  <AlertDialogContent className="max-w-xl rounded-2xl border border-[#27272A] bg-[#18181B] p-8 text-[#FAFAFA] shadow-[0_0_35px_rgba(168,85,247,.18)]">
                     <AlertDialogHeader className="space-y-3">
                       <AlertDialogTitle className="text-2xl font-bold text-[#FAFAFA]">
                         Delete User
@@ -104,7 +104,7 @@ function UsersTable({ users, handleDelete }: IProps) {
 
                       <AlertDialogAction
                         onClick={() => handleDelete?.(user.id)}
-                        className="!bg-[#F43F5E] !text-white hover:!bg-[#FB7185]">
+                        className="!bg-[#F43F5E] !text-white hover:!bg-[#F43F5E]/90">
                         Delete
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -119,4 +119,4 @@ function UsersTable({ users, handleDelete }: IProps) {
   );
 }
 
-export default UsersTable;
+export default memo(UsersTable);

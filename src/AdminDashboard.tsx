@@ -47,8 +47,12 @@ export default function AdminDashboard() {
   }, []);
 
   // Filter data berdasarkan search
-  const filteredUsers = users.filter((u) =>
-    u?.name?.toLowerCase().includes(search.toLowerCase()),
+  const filteredUsers = useMemo(
+    () =>
+      users.filter((u) =>
+        u?.name?.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [users, search],
   );
 
   useEffect(() => {

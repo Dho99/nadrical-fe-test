@@ -56,7 +56,7 @@ Menggunakan `useMemo()` untuk melakukan _memoization_ terhadap hasil perhitungan
 
 ```jsx
 const stats = useMemo(() => {
-    return calculateStatistics(users);
+  return calculateStatistics(users);
 }, [users]);
 ```
 
@@ -107,7 +107,7 @@ Menggunakan kombinasi `useRef()` dan `useEffect()`.
 const inputRef = useRef(null);
 
 useEffect(() => {
-    inputRef.current?.focus();
+  inputRef.current?.focus();
 }, []);
 ```
 
@@ -157,7 +157,7 @@ Fungsi `handleDelete` dideklarasikan di dalam body komponen.
 
 ```jsx
 const handleDelete = (id) => {
-    console.log("Menghapus user:", id);
+  console.log("Menghapus user:", id);
 };
 ```
 
@@ -179,7 +179,7 @@ Menggunakan `useCallback()`.
 
 ```jsx
 const handleDelete = useCallback((id) => {
-    console.log("Menghapus user:", id);
+  console.log("Menghapus user:", id);
 }, []);
 ```
 
@@ -216,11 +216,9 @@ npm run dev
 
 ---
 
-## Log Kontribusi
+## 📋 Log Kontribusi
 
-## Log Kontribusi
-
-| Anggota | Kontribusi                                                                                                   |
-| ------- | ------------------------------------------------------------------------------------------------------------ |
-| Ridho   | Setup Vite & UI Frameworks, inisialisasi GitHub repo, analisis bug [1,2,3], membuat login page, menambahkan sidebar, navbar, sidebar trigger, dan profile dropdown |
-| Sukma   | Analisis bug [4,5,6], update table & input, membuat fitur export ke Excel, serta membuat bar chart            |
+| Anggota   | Kontribusi                                                                                                                                                                             |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ridho** | • Setup Vite & UI Frameworks<br>• Inisialisasi GitHub Repository<br>• Analisis bug 1, 2, dan 3                                                                                         |
+| **Sukma** | • Analisis & implementasi bug 4, 5, dan 6<br>• Konfigurasi UI **UserTable** & **SuperHeavyChart**<br>• Implementasi animasi pada bar chart<br>• Implementasi ekspor data ke file Excel |

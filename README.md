@@ -207,11 +207,11 @@ https://react.dev/reference/react/useCallback
 ## Instruksi Build
 
 ```bash
+mkdir nadrical-fe
+cd nadrical-fe
+git clone https://github.com/Dho99/nadrical-fe-test.git .
 npm install
 npm run dev
-npm run build
-npm run preview
-npm run lint
 ```
 
 ---
